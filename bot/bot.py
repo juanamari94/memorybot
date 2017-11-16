@@ -71,7 +71,7 @@ def get_key(bot, update):
 
     token = get_token(update.message.chat_id)
 
-    keywords_headers = {"api_key": APP_API_KEY, "auth_token": token}
+    keywords_headers = {"auth_token": token}
 
     if not token:
         bot.send_message(chat_id=update.message.chat_id, text="We could not authenticate the group :(")
