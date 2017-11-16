@@ -102,3 +102,6 @@ ENV/
 
 # Ignore our secrets
 /utils/constants.py
+
+# Ignore IDEA stuff
+.idea/*
