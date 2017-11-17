@@ -1,5 +1,5 @@
 from telegram.ext import Updater
-from utils.constants import SERVER_IP, BOT_API_KEY, APP_API_KEY
+from utils.constants import API_SERVER_IP, FE_SERVER_IP, BOT_API_KEY, APP_API_KEY
 from telegram.ext import CommandHandler, MessageHandler, Filters
 import logging
 import requests
@@ -14,7 +14,7 @@ API_KEY_HEADER = {'api_key': APP_API_KEY}
 
 
 def get_token(chat_id):
-    url = '{}/token/{}'.format(SERVER_IP, chat_id)
+    url = '{}/token/{}'.format(API_SERVER_IP, chat_id)
     r = requests.get(url, headers=API_KEY_HEADER)
 
     if r.status_code == 200:
@@ -24,7 +24,7 @@ def get_token(chat_id):
 
 
 def request_renewal(chat_id, renew_token):
-    url = '{}/token'.format(SERVER_IP)
+    url = '{}/token'.format(API_SERVER_IP)
     data = {"group_id": chat_id}
     if renew_token:
         # PUT for BASE_URL/token/:group_id
@@ -62,8 +62,8 @@ def renew(bot, update):
 
 def manage_keys(bot, update):
     # Request format is BASE_URL/token/group_id
-    resp = requests.get('{}/token/{}'.format(SERVER_IP, update.message.chat_id), headers=API_KEY_HEADER)
-    manage_keys_url = '{}/keywords/{}?{}'.format(SERVER_IP, update.message.chat_id, resp.text)
+    resp = requests.get('{}/token/{}'.format(API_SERVER_IP, update.message.chat_id), headers=API_KEY_HEADER)
+    manage_keys_url = '{}/keywords/{}/{}'.format(FE_SERVER_IP, update.message.chat_id, resp.text)
     bot.send_message(chat_id=update.message.chat_id, text=manage_keys_url)
 
 
@@ -86,7 +86,7 @@ def get_key(bot, update):
 
     filtered_keyword = keyword[1:]
 
-    url = '{}/keywords/{}/{}'.format(SERVER_IP, update.message.chat_id, filtered_keyword)
+    url = '{}/keywords/{}/{}/{}'.format(API_SERVER_IP, update.message.chat_id, token, filtered_keyword)
     resp = requests.get(url, headers=keywords_headers)
 
     if resp.status_code == 200:
